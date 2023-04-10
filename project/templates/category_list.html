@@ -1,0 +1,98 @@
+{% extends 'flatpages/default.html' %}
+
+{% load i18n %}
+
+{% block title %}
+Categorys page
+{% endblock title %}
+
+{% load custom_tags %}
+
+{% block content %}
+<h1>All posts in Categorys :</h1>
+<hr>
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Search" />
+    </form>
+<hr>
+    {% if perms.callboard.add_post %}
+    <a href="{% url 'post_create' %}">Add post</a>
+    {% endif %}
+    {% if category_post_list %}
+<head>
+    <meta charset="utf-8">
+    <style>
+    table {
+    width: 800px; /* Ширина таблицы */
+    border: 1px solid black; /* Рамка вокруг таблицы */
+    margin: auto; /* Выравниваем таблицу по центру окна  */
+    }
+    td {
+    text-align: center; /* Выравниваем текст по центру ячейки */
+    }
+    </style>
+ </head>
+        <table>
+            <tr>
+                <td>Number</td>
+                <td>Category</td>
+                <td>Title</td>
+                <td>Text</td>
+                <td>Image</td>
+                <td>Publish Date</td>
+                {% if perms.callboard.edit_post or perms.callboard.delete_post %}
+                <td>Actions</td>
+                {% endif %}
+            </tr>
+            {% for post in category_post_list %}
+            <tr>
+
+                <td><a href="/posts/{{ post.pk }}">{{ post.pk }}</a></td>
+                <td>
+                    {% for cat in post.postCategory.all %}
+                    {{ cat.name }}
+                    {% endfor %}
+                </td>
+                <td>{{ post.title }}</td>
+                <td>{{ post.text|truncatechars:20 }}</td>
+                <td>
+                <img src="{{ post.upload.url }}" alt="Post picture" width="150px">
+                </td>
+                <td>{{ post.dateCreation|date:'M d Y' }}</td>
+                <td>
+                    {% if perms.callboard.change_post %}
+                    <a href="{% url 'post_edit' pk=post.id %}">Edit</a>
+                    {% endif %}
+                    {% if perms.callboard.delete_post %}
+                    <a href="{% url 'post_delete' post.id %}">Delete</a>
+                    {% endif %}
+                    {% if perms.callboard.review_post %}
+                    <a href="{% url 'review_post' post.id %}">Review</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h3>No posts!</h3>
+    {% endif %}
+
+    {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+    {{ page_obj.number }}
+
+    {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+{% endblock content %}

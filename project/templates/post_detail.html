@@ -1,0 +1,49 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Post detail
+{% endblock title%}
+
+{% block content %}
+<h1>One post</h1>
+{% if post_detail %}
+<head>
+    <meta charset="utf-8">
+    <style>
+    table {
+        width: 900px;
+        border: 1px solid black;
+        margin: auto;
+        }
+    td {
+        text-align: center;
+    }
+    </style>
+        <table>
+    <tr>
+
+        <td>Category</td>
+        <td>Title</td>
+        <td>Text</td>
+        <td>File</td>
+        <td>Publish Date</td>
+    </tr>
+    <tr>
+        <td>
+            {% for cat in post_detail.postCategory.all %}
+            {{ cat.name }}
+            {% endfor %}
+        </td>
+        <td>{{ post_detail.title }}</td>
+        <td>{{ post_detail.text }}</td>
+        <td>
+            <img src="{{ post_detail.upload.url }}" alt="" width="400px">
+        </td>
+        <td>{{ post_detail.dateCreation|date:'M d y' }}</td>
+    </tr>
+    </table>
+    {% else %}
+    <h3>Something went wrong</h3>
+    {% endif %}
+</head>
+{% endblock content %}

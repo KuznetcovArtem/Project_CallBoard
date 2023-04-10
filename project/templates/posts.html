@@ -1,0 +1,93 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Posts
+{% endblock title%}
+
+{% load custom_tags %}
+
+{% block content %}
+<h1>All posts</h1>
+<hr>
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Search" />
+    </form>
+<hr>
+    {% if perms.callboard.add_post %}
+    <a href="{% url 'post_create' %}">Add post</a>
+    {% endif %}
+<head>
+    {% if posts %}
+    <meta charset="utf-8">
+    <style>
+    table {
+        width: 900px;
+        border: 1px solid black;
+        margin: auto;
+        }
+    td {
+        text-align: center;
+    }
+    </style>
+        <table>
+    <tr>
+        <td>Number</td>
+        <td>Category</td>
+        <td>Title</td>
+        <td>Text</td>
+        <td>File</td>
+        <td>Publish Date</td>
+        <td>Actions</td>
+    </tr>
+    {% for post in posts %}
+    <tr>
+        <td><a href="/posts/{{ post.pk }}">{{ post.pk }}</a></td>
+        <td>
+            {% for cat in post.postCategory.all %}
+            <a href="{% url 'category_list' pk=cat.id %}"> {{ cat.name }} </a>
+            {% endfor %}
+        </td>
+        <td>{{ post.title }}</td>
+        <td>{{ post.text|truncatechars:20 }}</td>
+        <td>
+            <img src="{{ post.upload.url }}" alt="" width="150px">
+        </td>
+        <td>{{ post.dateCreation|date:'M d y' }}</td>
+        <td>
+            {% if perms.callboard.change_post %}
+            <a href="{% url 'post_edit' pk=post.id %}">Edit</a>
+            {% endif %}
+            {% if perms.callboard.delete_post %}
+            <a href="{% url 'post_delete' post.id %}">Delete</a>
+            {% endif %}
+            <a href="{% url 'review_post' post.id %}">Review</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% else %}
+    <h3>No posts</h3>
+    {% endif %}
+
+    {% if page_obj.has_previous %}
+       {# Для каждой ссылки пагинации указываем обработку через новый тег #}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+</head>
+{% endblock content %}

@@ -29,7 +29,4 @@ DEFAULT_FROM_EMAIL_YANDEX=<Полный адрес пользователя ис
 python manage.py runserver
 ```
 
-
-### Цель проекта
-
 Код написан в образовательных целях на онлайн-курсе "Fullstack разработчик на Python" [Skillfactory.ru](https://skillfactory.ru)
