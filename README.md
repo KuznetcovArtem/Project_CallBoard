@@ -24,7 +24,7 @@ DEFAULT_FROM_EMAIL_YANDEX=<Полный адрес пользователя ис
 
 ## Основные страницы:<br>
 [Backend - admin/admin](http://127.0.0.1:8000/admin/)<br>
-[Главная](http://127.0.0.1:8000/news/)<br>
+[Главная](http://127.0.0.1:8000/posts/)<br>
 [Залогиниться для пользователя](http://127.0.0.1:8000/accounts/login/)<br>
 [Разлогиниться для пользователя](http://127.0.0.1:8000/accounts/logout/)<br>
 [Страница отзывов](http://127.0.0.1:8000/posts/reviewlist/)<br>
