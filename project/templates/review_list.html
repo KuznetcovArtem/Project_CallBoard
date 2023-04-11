@@ -1,0 +1,65 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+All reviews
+{% endblock title %}
+
+{% load custom_tags %}
+
+{% block content %}
+<h1>All reviews</h1>
+<hr>
+{% if review_post_list %}
+<meta charset="utf-8">
+    <style>
+    table {
+        width: 900px;
+        border: 1px solid black;
+        margin: auto;
+        }
+    td {
+        text-align: center;
+    }
+    </style>
+    <table>
+        <tr>
+            <td>Author</td>
+            <td>Title</td>
+            <td>Text</td>
+            <td>Publish Date</td>
+            <td>Actions</td>
+        </tr>
+        {% for rev in review_post_list %}
+        <tr>
+            <td>{{ rev.reviewUser }}</td>
+            <td>{{ rev.reviewPost.title }}</td>
+            <td>{{ rev.text }}</td>
+            <td>{{ rev.dateCreation|date:'j M Y' }}</td>
+            <td><button> <a href="reviewPost/"> Откликнуться </a></button></td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <h2>No reviews</h2>
+{% endif %}
+
+{% if page_obj.has_previous %}
+       {# Для каждой ссылки пагинации указываем обработку через новый тег #}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+{% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+{% endblock content %}

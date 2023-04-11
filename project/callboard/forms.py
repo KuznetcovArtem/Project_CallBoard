@@ -38,3 +38,9 @@ class ReviewPostForm(forms.ModelForm):
             'reviewUser',
             'reviewPost',
         ]
+
+
+class ReviewPostStatusForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['status', ]

@@ -1,9 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from datetime import datetime
+
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .forms import PostForm, ReviewPostForm
+from .forms import PostForm, ReviewPostForm, ReviewPostStatusForm
 from .models import Post, Category, Review
 from .filters import PostFilter
 
@@ -27,27 +29,27 @@ class PostList(ListView):
         return context
 
 
-class PostDetail(DetailView):
+class PostDetail(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'post_detail.html'
     context_object_name = 'post_detail'
 
 
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
     permission_required = ('post_create')
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
 
-class PostEdit(UpdateView):
+class PostEdit(PermissionRequiredMixin, UpdateView):
     permission_required = ('post_edit')
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
 
-class PostDelete(DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
     permission_required = ('post_delete')
     model = Post
     template_name = 'post_delete.html'
@@ -55,7 +57,6 @@ class PostDelete(DeleteView):
 
 
 class ReviewPost(LoginRequiredMixin, CreateView):
-    raise_exception = True
     permission_required = ('review_post')
     form_class = ReviewPostForm
     model = Review
@@ -79,5 +80,19 @@ class CategoryListView(ListView):
         return context
 
 
-class ReviewList(ListView):
-    model = Post
+class ReviewList(PermissionRequiredMixin, ListView):
+    permission_required = ('review_list')
+    model = Review
+    template_name = 'review_list.html'
+    context_object_name = 'review_post_list'
+    paginate_by = 10
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class ReviewChangeStatus(LoginRequiredMixin, UpdateView):
+    form_class = ReviewPostStatusForm
+    model = Review
+    template_name = 'review_post_edit.html'
