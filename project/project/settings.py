@@ -183,6 +183,6 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL_YANDEX')
 
-ADMINS = [
-    ('Admin', 'user_admin@user_admin.com'),
-]
+# ADMINS = [
+#     ('Admin', 'user_admin@user_admin.com'),
+# ]

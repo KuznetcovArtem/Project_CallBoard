@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -30,40 +28,42 @@ class PostList(ListView):
 
 
 class PostDetail(LoginRequiredMixin, DetailView):
+    raise_exception = True
     model = Post
     template_name = 'post_detail.html'
     context_object_name = 'post_detail'
 
 
-class PostCreate(PermissionRequiredMixin, CreateView):
-    permission_required = ('post_create')
+class PostCreate(LoginRequiredMixin, CreateView):
+    raise_exception = True
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
 
-class PostEdit(PermissionRequiredMixin, UpdateView):
-    permission_required = ('post_edit')
+class PostEdit(LoginRequiredMixin, UpdateView):
+    raise_exception = True
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
 
-class PostDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = ('post_delete')
+class PostDelete(LoginRequiredMixin, DeleteView):
+    raise_exception = True
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
 
 
 class ReviewPost(LoginRequiredMixin, CreateView):
-    permission_required = ('review_post')
+    raise_exception = True
     form_class = ReviewPostForm
     model = Review
     template_name = 'review_post.html'
 
 
-class CategoryListView(ListView):
+class CategoryListView(LoginRequiredMixin, ListView):
+    raise_exception = True
     model = Post
     template_name = 'category_list.html'
     context_object_name = 'category_post_list'
@@ -80,12 +80,19 @@ class CategoryListView(ListView):
         return context
 
 
-class ReviewList(PermissionRequiredMixin, ListView):
-    permission_required = ('review_list')
+class ReviewList(ListView):
     model = Review
     template_name = 'review_list.html'
     context_object_name = 'review_post_list'
     paginate_by = 10
+
+    def get_queryset(self):
+        current_user = self.request.user
+        if current_user.is_authenticated:
+            return Review.objects.filter(reviewPost__author__authorUser=current_user)
+        else:
+            return Review.objects.none()
+
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -93,6 +100,14 @@ class ReviewList(PermissionRequiredMixin, ListView):
 
 
 class ReviewChangeStatus(LoginRequiredMixin, UpdateView):
+    raise_exception = True
     form_class = ReviewPostStatusForm
     model = Review
     template_name = 'review_post_edit.html'
+
+
+class ReviewPostDelete(LoginRequiredMixin, DeleteView):
+    raise_exception = True
+    model = Review
+    template_name = 'review_post_delete.html'
+    success_url = reverse_lazy('review_list')

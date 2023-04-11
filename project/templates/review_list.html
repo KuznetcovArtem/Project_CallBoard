@@ -35,7 +35,14 @@ All reviews
             <td>{{ rev.reviewPost.title }}</td>
             <td>{{ rev.text }}</td>
             <td>{{ rev.dateCreation|date:'j M Y' }}</td>
-            <td><button> <a href="reviewPost/"> Откликнуться </a></button></td>
+            <td>
+                {% if perms.callboard.change_review %}
+                <a href="{% url 'review_post_edit' pk=rev.id %}">Откликнуться</a>
+                {% endif %}
+                {% if perms.callboard.delete_review %}
+                <a href="{% url 'review_post_delete' pk=rev.id %}">Удалить</a>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>

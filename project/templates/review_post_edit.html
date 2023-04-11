@@ -1,7 +1,7 @@
-{% extends 'default.html' %}
+{% extends 'flatpages/default.html' %}
 
 {% block content %}
-<h1>Review to post</h1>
+<h1>Review to post : {{ object.text }}</h1>
 <hr>
 <form action="" method="post">
     {% csrf_token %}

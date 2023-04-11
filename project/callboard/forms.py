@@ -43,4 +43,4 @@ class ReviewPostForm(forms.ModelForm):
 class ReviewPostStatusForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['status', ]
+        fields = ['status', 'text']
